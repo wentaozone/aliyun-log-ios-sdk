@@ -10,6 +10,7 @@
 #import "LogProducerConfig.h"
 #import <sys/sysctl.h>
 #import "NSDateFormatter+SLS.h"
+#import "SLSURLSession.h"
 
 @interface TimeUtils ()
 +(NSTimeInterval) elapsedRealtime;
@@ -40,7 +41,21 @@ static NSTimeInterval elapsedRealtime = 0;
     [request setURL:[NSURL URLWithString:urlString]];
     [request addValue:@"0.6.0" forHTTPHeaderField:@"x-log-apiversion"];
     
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+//    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+//        if (response != nil) {
+//            NSHTTPURLResponse *httpResponse = response;
+//            NSDictionary *fields = [httpResponse allHeaderFields];
+//            NSString *timeVal = fields[@"x-log-time"];
+//            if ([timeVal length] != 0) {
+//                NSInteger serverTime = [timeVal integerValue];
+//                if (serverTime > 1500000000 && serverTime < 4294967294) {
+//                    [TimeUtils updateServerTime:serverTime];
+//                }
+//            }
+//        }
+//    }];
+    
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (response != nil) {
             NSHTTPURLResponse *httpResponse = response;
             NSDictionary *fields = [httpResponse allHeaderFields];
@@ -53,6 +68,7 @@ static NSTimeInterval elapsedRealtime = 0;
             }
         }
     }];
+    [task resume];
 }
 
 +(void) updateServerTime: (NSInteger) timeInMillis

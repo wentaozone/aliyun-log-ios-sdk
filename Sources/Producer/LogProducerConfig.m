@@ -115,10 +115,10 @@ static int os_http_post(const char *url,
             
             strncpy(http_response->errorMessage, [errorMessage UTF8String], error_message_len);
             
-            if (error.code == kCFURLErrorUserCancelledAuthentication) {
+            if (error.code == NSURLErrorUserCancelledAuthentication) {
                 return 401;
             }
-            if (error.code == kCFURLErrorBadServerResponse) {
+            if (error.code == NSURLErrorBadServerResponse) {
                 return 500;
             }
         }
