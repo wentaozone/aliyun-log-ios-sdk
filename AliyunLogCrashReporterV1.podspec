@@ -3,9 +3,9 @@
 ################################################################################################################################
 
 Pod::Spec.new do |s|
-    s.name             = 'AliyunLogProducer'
+    s.name             = 'AliyunLogCrashReporterV1'
     s.version          = "4.3.3"
-    s.summary          = 'aliyun log service ios producer.'
+    s.summary          = 'aliyun log service ios crashreporter v1'
 
     s.description      = <<-DESC
     log service ios producer.
@@ -29,21 +29,21 @@ Pod::Spec.new do |s|
     s.swift_version = "5.0"
     #  s.xcconfig = { 'GCC_ENABLE_CPP_EXCEPTIONS' => 'YES' }
 
-    #  s.default_subspec = 'Producer'
-  
     s.pod_target_xcconfig = {
         'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 i386',
+        'OTHER_LDFLAGS' => '-ObjC',
     }
-  
+
     s.user_target_xcconfig = {
         'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 i386'
     }
 
-    s.ios.deployment_target = '10.0'
-    s.watchos.deployment_target = '6.0'
-    s.tvos.deployment_target =  '10.0'
-    s.osx.deployment_target =  '10.12'
-    s.source_files = 'Sources/Producer/**/*.{h,m}', 'Sources/aliyun-log-c-sdk/**/*.{c,h}'
-    s.public_header_files = 'Sources/Producer/include/*.h', 'Sources/aliyun-log-c-sdk/include/*.h'
-    s.resource_bundles = { s.name => ['Sources/Producer/PrivacyInfo.xcprivacy'] }
+    s.dependency 'AliyunLogProducer', "#{s.version}"
+    s.source_files = 'Sources/CrashReporter/**/*.{m,h}', 'Sources/Core/**/*.{m,h}', 'Sources/OT/**/*.{m,h}'
+    s.public_header_files = "Sources/CrashReporter/include/*.h", 'Sources/Core/include/*.h', 'Sources/OT/**/include/*.h'
+    s.resource_bundles = { s.name => ['Sources/CrashReporter/PrivacyInfo.xcprivacy'] }
+    s.vendored_frameworks = 'Sources/WPKMobi/WPKMobi.xcframework'
+    s.exclude_files = 'Sources/WPKMobi/WPKMobi.xcframework/**/Headers/*.h'
+    s.frameworks = "SystemConfiguration", "CoreGraphics"
+    s.libraries = "z", "c++"
 end
